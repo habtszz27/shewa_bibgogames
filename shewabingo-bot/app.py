@@ -27,7 +27,14 @@ db.init_app(app)
 with app.app_context():
     init_db()
 
-application = build_application(TELEGRAM_BOT_TOKEN, socketio)
+application = None
+if TELEGRAM_BOT_TOKEN:
+    try:
+        application = build_application(TELEGRAM_BOT_TOKEN, socketio)
+    except Exception as e:
+        print(f"[WARN] Telegram bot init failed: {e}")
+else:
+    print("[WARN] TELEGRAM_BOT_TOKEN not set; bot disabled")
 
 @app.route('/')
 def index():
@@ -71,8 +78,13 @@ if USE_WEBHOOK and WEBHOOK_BASE:
 else:
     # Start long polling in background
     def _run_polling():
-        application.run_polling(allowed_updates=application.resolve_used_update_types())
-    threading.Thread(target=_run_polling, daemon=True).start()
+        try:
+            application.run_polling(allowed_updates=application.resolve_used_update_types())
+        except Exception as e:
+            print(f'[WARN] polling failed: {e}')
+    import threading as _th
+    if application:
+        _th.Thread(target=_run_polling, daemon=True).start()
 
 # Helper for worker threads to emit events
 @app.before_first_request
