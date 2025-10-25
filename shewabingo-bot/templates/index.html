@@ -1,0 +1,18 @@
+<!doctype html>
+<html>
+<head>
+  <title>SHEWA Bingo Lobby</title>
+  <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+  <link rel="stylesheet" href="/static/css/style.css" />
+</head>
+<body>
+  <h1>SHEWA Bingo Lobby</h1>
+  <ul>
+    {% for r in rooms %}
+      <li><a href="/room/{{ r.code }}">Room {{ r.code }} ({{ r.status }})</a></li>
+    {% else %}
+      <li>No rooms yet</li>
+    {% endfor %}
+  </ul>
+</body>
+</html>

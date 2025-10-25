@@ -1,0 +1,12 @@
+<!doctype html>
+<html>
+<head><title>Leaderboard</title></head>
+<body>
+  <h1>Leaderboard</h1>
+  <ol>
+    {% for u in users %}
+      <li>{{ u.display_name }} — {{ u.balance }}</li>
+    {% endfor %}
+  </ol>
+</body>
+</html>

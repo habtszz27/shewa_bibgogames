@@ -1,0 +1,29 @@
+<!doctype html>
+<html>
+<head>
+  <title>Room {{ room.code if room else 'N/A' }}</title>
+  <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+</head>
+<body>
+  <h2>Room {{ room.code }}</h2>
+  <div id="draws">
+    {% for d in draws %}
+      <div>Draw #{{ d.sequence }}: {{ d.number }}</div>
+    {% endfor %}
+  </div>
+  <script>
+    const code = '{{ room.code }}';
+    const socket = io();
+    socket.emit('join', {code});
+    socket.on('number_drawn', (data) => {
+      if (data.code === code) {
+        const div = document.getElementById('draws');
+        const el = document.createElement('div');
+        el.textContent = `Draw #${data.sequence}: ${data.number}`;
+        div.appendChild(el);
+      }
+    });
+    window.onbeforeunload = () => socket.emit('leave', {code});
+  </script>
+</body>
+</html>
