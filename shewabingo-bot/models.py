@@ -7,6 +7,15 @@ from flask_sqlalchemy import SQLAlchemy
 
 DB_URL = os.getenv('DATABASE_URL', 'sqlite:///data/bingo.db')
 engine = create_engine(DB_URL, future=True)
+
+import os
+if DB_URL.startswith('sqlite:///'):
+    # Ensure sqlite directory exists (e.g., sqlite:///data/bingo.db)
+    path = DB_URL.replace('sqlite:///','')
+    dirp = os.path.dirname(path)
+    if dirp and not os.path.exists(dirp):
+        os.makedirs(dirp, exist_ok=True)
+
 Session = scoped_session(sessionmaker(bind=engine, autoflush=False))
 Base = declarative_base()
 
