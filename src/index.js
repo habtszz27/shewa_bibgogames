@@ -137,8 +137,10 @@ bot.command('status', async (ctx) => {
 });
 
 const app = express();
+app.use(express.json());
 app.get('/', (req, res) => res.send('OK'));
-app.use(bot.webhookCallback('/webhook'));
+app.post('/webhook', bot.webhookCallback('/webhook'));
+
 
 if (TELEGRAM_WEBHOOK_URL) {
   const base = TELEGRAM_WEBHOOK_URL.replace(/\/$/, '');
